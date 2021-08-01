@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +37,8 @@ namespace UserAuthentication
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAuthentication", Version = "v1" });
 			});
 
-			
+			services.AddIdentity<IdentityUser, IdentityRole>()
+				.AddEntityFrameworkStores<AppDbContext>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
