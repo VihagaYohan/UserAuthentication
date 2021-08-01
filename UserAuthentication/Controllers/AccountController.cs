@@ -16,14 +16,14 @@ namespace UserAuthentication.Controllers
 		private readonly UserManager<IdentityUser> userManager;
 		private readonly SignInManager<IdentityUser> signInManger;
 
-		public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManger)
+		public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManger)
 		{
 			this.userManager = userManager;
 			this.signInManger = signInManger;
 		}
 
 		[HttpPost("register")]
-		public async Task<IActionResult> Register(RegisterVM model) 
+		public async Task<IActionResult> Register(RegisterVM model)
 		{
 			var user = new IdentityUser { UserName = model.Email, Email = model.Email };
 			var result = await userManager.CreateAsync(user, model.Password);
@@ -31,6 +31,23 @@ namespace UserAuthentication.Controllers
 
 			await signInManger.SignInAsync(user, isPersistent: false);
 			return Ok(result);
+		}
+
+		[HttpPost("login")]
+		public async Task<IActionResult> Login(LoginVM model)
+		{
+			var result = await signInManger.PasswordSignInAsync(model.Email, model.Password,
+				model.RembmerMe, false);
+
+			if (result.Succeeded)
+			{
+				return Ok(result);
+			}
+			else
+			{ 
+				return BadRequest(result);
+			}
+
 		}
 	}
 }
